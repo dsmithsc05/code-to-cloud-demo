@@ -1,0 +1,48 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: fraud-detection
+  description: Real-time transaction scoring. XGBoost model served via FastAPI; falls back to rule-based scoring if model latency exceeds 80ms p99.
+  annotations:
+    github.com/project-slug: meridianpay/fraud-detection
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: fraud-detection
+  tags:
+    - python
+    - container-apps
+  links:
+    - url: https://github.com/meridianpay/fraud-detection
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/fraud-detection
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-risk
+  system: meridian-pay
+  providesApis:
+    - fraud-score-api
+  dependsOn:
+    - resource:default/cosmos-fraud-features
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: fraud-score-api
+  description: Returns a 0-1000 risk score for a transaction within 80ms p99.
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-risk
+  system: meridian-pay
+  definition: |
+    openapi: 3.0.0
+    info: { title: Fraud Score API, version: 1.2.0 }
+    paths:
+      /score:
+        post:
+          summary: Score a transaction
+          responses: { '200': { description: OK } }

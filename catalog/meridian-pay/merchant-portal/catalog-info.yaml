@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: merchant-portal
+  description: Merchant-facing web portal. Settlement reports, dispute management, virtual terminal. SSR React on Static Web Apps with CDN in front.
+  annotations:
+    github.com/project-slug: meridianpay/merchant-portal
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: merchant-portal
+  tags:
+    - typescript-react
+    - static-web-apps
+  links:
+    - url: https://github.com/meridianpay/merchant-portal
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/merchant-portal
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: website
+  lifecycle: production
+  owner: team-merchant
+  system: meridian-pay
+  dependsOn:
+    - component:default/payments-api
+    - component:default/statements-worker

@@ -1,0 +1,109 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: new-dotnet-service
+  title: .NET Azure Service
+  description: Scaffold a production-ready .NET 8 service deployed to Azure Container Apps with azd, Backstage catalog entry, TechDocs, and a CI workflow.
+  tags:
+    - dotnet
+    - azure
+    - recommended
+spec:
+  owner: group:default/team-platform
+  type: service
+  parameters:
+    - title: Service Details
+      required:
+        - name
+        - description
+        - owner
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Lowercase, hyphen-separated name (3-30 characters).
+          pattern: '^[a-z][a-z0-9-]{1,28}[a-z0-9]$'
+          ui:autofocus: true
+          ui:help: Use kebab-case. Will be the repo name and Backstage component name.
+        description:
+          title: Description
+          type: string
+          description: One- or two-sentence summary of what the service does.
+        owner:
+          title: Owner
+          type: string
+          description: Owning team for this service.
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: Azure Configuration
+      required:
+        - azureEnvironment
+        - azureLocation
+      properties:
+        azureEnvironment:
+          title: Azure Environment
+          type: string
+          description: Target lifecycle environment.
+          enum:
+            - dev
+            - staging
+            - production
+          default: dev
+        azureLocation:
+          title: Azure Region
+          type: string
+          description: Azure region for deployment.
+          enum:
+            - canadacentral
+            - canadaeast
+            - eastus2
+          default: canadacentral
+    - title: Repository
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: fetch-base
+      name: Fetch Skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          azureEnvironment: ${{ parameters.azureEnvironment }}
+          azureLocation: ${{ parameters.azureLocation }}
+          repoUrl: ${{ parameters.repoUrl }}
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        defaultBranch: main
+        repoVisibility: private
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+    - id: register
+      name: Register in Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}

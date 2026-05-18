@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: kyc-onboarding
+  description: Customer onboarding pipeline. Wraps identity verification, document scanning, sanctions screening, and PEP checks. Hands off to fraud-detection for ongoing risk.
+  annotations:
+    github.com/project-slug: meridianpay/kyc-onboarding
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: kyc-onboarding
+  tags:
+    - nodejs
+    - container-apps
+  links:
+    - url: https://github.com/meridianpay/kyc-onboarding
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/kyc-onboarding
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-risk
+  system: meridian-pay
+  dependsOn:
+    - component:default/fraud-detection
+    - resource:default/cosmos-kyc

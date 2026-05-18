@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: statements-worker
+  description: Generates monthly account statements as PDFs. Triggered by a timer on the 1st; processes ~12M accounts in ~3 hours using Functions Premium with VNET egress to ledger-svc.
+  annotations:
+    github.com/project-slug: meridianpay/statements-worker
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: statements-worker
+  tags:
+    - dotnet
+    - azure-functions
+  links:
+    - url: https://github.com/meridianpay/statements-worker
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/statements-worker
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-ledger
+  system: meridian-pay
+  dependsOn:
+    - component:default/ledger-svc
+    - resource:default/blob-statements

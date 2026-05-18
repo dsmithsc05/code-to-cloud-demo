@@ -1,0 +1,14 @@
+app:
+  baseUrl: https://backstage.meridianpay.aks.canadacentral.azure.com
+
+backend:
+  baseUrl: https://backstage-api.meridianpay.aks.canadacentral.azure.com
+  listen:
+    port: 7007
+  cors:
+    origin: https://backstage.meridianpay.aks.canadacentral.azure.com
+  logger:
+    level: info
+
+auth:
+  environment: production

@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: meridian-pay
+  description: |
+    Meridian Pay — embedded fintech platform for issuing, processing, and reconciliation.
+    Powers card issuing, payment authorization, fraud screening, and merchant settlement
+    for ~12 million end-user accounts across Canada and the US.
+  tags: [fintech, payments, embedded]
+spec:
+  owner: team-platform
+  domain: financial-services

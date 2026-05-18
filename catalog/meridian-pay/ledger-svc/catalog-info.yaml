@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ledger-svc
+  description: Double-entry ledger service. Source of truth for all account balances and transaction history. Strongly-consistent writes via Postgres logical replication; eventual-read replicas in two regions.
+  annotations:
+    github.com/project-slug: meridianpay/ledger-svc
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: ledger-svc
+  tags:
+    - go
+    - aks
+  links:
+    - url: https://github.com/meridianpay/ledger-svc
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/ledger-svc
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-ledger
+  system: meridian-pay
+  dependsOn:
+    - resource:default/postgres-flex-primary

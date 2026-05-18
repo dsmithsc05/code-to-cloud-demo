@@ -1,0 +1,118 @@
+app:
+  title: Meridian Pay Developer Portal
+  baseUrl: ${BACKSTAGE_BASE_URL}
+
+organization:
+  name: Meridian Pay
+
+backend:
+  baseUrl: ${BACKSTAGE_BACKEND_BASE_URL}
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: ${BACKSTAGE_BASE_URL}
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: pg
+    connection:
+      host: ${POSTGRES_HOST}
+      port: ${POSTGRES_PORT}
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      database: ${POSTGRES_DB}
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+auth:
+  environment: production
+  providers:
+    microsoft:
+      production:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANT_ID}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+            - resolver: emailLocalPartMatchingUserEntityName
+
+catalog:
+  rules:
+    - allow:
+        - Component
+        - System
+        - API
+        - Group
+        - User
+        - Resource
+        - Location
+        - Domain
+        - Template
+  locations:
+    - type: file
+      target: ../../../catalog/meridian-pay/orgs.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/system.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/payments-api/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/ledger-svc/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/fraud-detection/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/statements-worker/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/kyc-onboarding/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/card-issuer-bridge/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/merchant-portal/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/webhook-dispatcher/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/reconciliation-batch/catalog-info.yaml
+    - type: file
+      target: ../../../catalog/meridian-pay/audit-log-collector/catalog-info.yaml
+    - type: file
+      target: ../templates/new-dotnet-service.yaml
+      rules:
+        - allow: [Template]
+
+kubernetes:
+  serviceLocatorMethod:
+    type: multiTenant
+  clusterLocatorMethods:
+    - type: config
+      clusters:
+        - name: aks-meridian-prod
+          url: ${K8S_URL}
+          authProvider: serviceAccount
+          serviceAccountToken: ${K8S_SA_TOKEN}
+          skipTLSVerify: false
+          skipMetricsLookup: false
+  customResources:
+    - group: Microsoft.App
+      apiVersion: v1beta1
+      plural: ContainerApp
+
+techdocs:
+  builder: local
+  publisher:
+    type: local
+  generator:
+    runIn: local
+
+costWidget:
+  dataSource: file:./plugins/cost-widget/fixtures/mock-costs.json
+  currency: CAD
+
+scaffolder:
+  defaultAuthor:
+    name: Backstage
+    email: backstage@meridianpay.com

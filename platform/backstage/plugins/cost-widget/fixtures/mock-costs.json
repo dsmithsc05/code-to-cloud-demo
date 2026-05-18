@@ -1,0 +1,556 @@
+{
+  "generatedAt": "2026-05-15T10:00:00Z",
+  "currency": "CAD",
+  "services": [
+    {
+      "serviceId": "payments-api",
+      "monthlySpend": 8240,
+      "currency": "CAD",
+      "trend30d": [
+        264,
+        275,
+        276,
+        287,
+        267,
+        271,
+        282,
+        281,
+        288,
+        283,
+        288,
+        290,
+        291,
+        287,
+        278,
+        289,
+        275,
+        296,
+        286,
+        298,
+        295,
+        295,
+        282,
+        284,
+        306,
+        306,
+        303,
+        309,
+        296,
+        283
+      ],
+      "topResources": [
+        {
+          "name": "ca-api-payments-prod",
+          "monthlyCost": 5120,
+          "type": "Container Apps"
+        },
+        {
+          "name": "appi-payments-prod",
+          "monthlyCost": 1840,
+          "type": "Application Insights"
+        },
+        {
+          "name": "kv-payments-prod",
+          "monthlyCost": 1280,
+          "type": "Key Vault"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "ledger-svc",
+      "monthlySpend": 6180,
+      "currency": "CAD",
+      "trend30d": [
+        203,
+        208,
+        203,
+        207,
+        216,
+        213,
+        211,
+        200,
+        215,
+        208,
+        210,
+        210,
+        214,
+        213,
+        205,
+        214,
+        220,
+        217,
+        216,
+        225,
+        212,
+        216,
+        227,
+        218,
+        220,
+        209,
+        214,
+        213,
+        211,
+        226
+      ],
+      "topResources": [
+        {
+          "name": "aks-ledger-nodepool",
+          "monthlyCost": 3960,
+          "type": "AKS Node Pool"
+        },
+        {
+          "name": "pg-ledger-prod",
+          "monthlyCost": 1620,
+          "type": "Postgres Flexible Server"
+        },
+        {
+          "name": "law-ledger-prod",
+          "monthlyCost": 600,
+          "type": "Log Analytics"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "fraud-detection",
+      "monthlySpend": 5720,
+      "currency": "CAD",
+      "trend30d": [
+        198,
+        184,
+        194,
+        192,
+        192,
+        188,
+        201,
+        197,
+        194,
+        195,
+        204,
+        206,
+        198,
+        198,
+        201,
+        194,
+        205,
+        199,
+        199,
+        208,
+        199,
+        197,
+        197,
+        193,
+        206,
+        205,
+        203,
+        205,
+        205,
+        214
+      ],
+      "topResources": [
+        {
+          "name": "ca-fraud-prod",
+          "monthlyCost": 2200,
+          "type": "Container Apps"
+        },
+        {
+          "name": "openai-fraud-tokens",
+          "monthlyCost": 2240,
+          "type": "OpenAI Inference"
+        },
+        {
+          "name": "cosmos-fraud-features",
+          "monthlyCost": 1280,
+          "type": "Cosmos DB"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "statements-worker",
+      "monthlySpend": 1940,
+      "currency": "CAD",
+      "trend30d": [
+        63,
+        65,
+        65,
+        67,
+        67,
+        66,
+        68,
+        68,
+        65,
+        69,
+        64,
+        68,
+        69,
+        67,
+        67,
+        70,
+        71,
+        70,
+        68,
+        65,
+        67,
+        68,
+        66,
+        70,
+        68,
+        69,
+        66,
+        66,
+        70,
+        73
+      ],
+      "topResources": [
+        {
+          "name": "func-statements-prem",
+          "monthlyCost": 980,
+          "type": "Functions Premium"
+        },
+        {
+          "name": "st-statements-blob",
+          "monthlyCost": 540,
+          "type": "Blob Storage"
+        },
+        {
+          "name": "sbns-statements",
+          "monthlyCost": 420,
+          "type": "Service Bus"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "kyc-onboarding",
+      "monthlySpend": 3410,
+      "currency": "CAD",
+      "trend30d": [
+        109,
+        117,
+        111,
+        116,
+        118,
+        120,
+        117,
+        117,
+        112,
+        114,
+        118,
+        120,
+        123,
+        118,
+        121,
+        114,
+        115,
+        120,
+        125,
+        124,
+        120,
+        115,
+        122,
+        126,
+        124,
+        126,
+        119,
+        121,
+        126,
+        123
+      ],
+      "topResources": [
+        {
+          "name": "ca-kyc-prod",
+          "monthlyCost": 1780,
+          "type": "Container Apps"
+        },
+        {
+          "name": "cosmos-kyc-prod",
+          "monthlyCost": 1180,
+          "type": "Cosmos DB"
+        },
+        {
+          "name": "st-kyc-docs",
+          "monthlyCost": 450,
+          "type": "Blob Storage"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "card-issuer-bridge",
+      "monthlySpend": 4650,
+      "currency": "CAD",
+      "trend30d": [
+        150,
+        148,
+        150,
+        162,
+        150,
+        155,
+        155,
+        162,
+        151,
+        159,
+        156,
+        156,
+        157,
+        154,
+        168,
+        162,
+        167,
+        156,
+        163,
+        162,
+        161,
+        165,
+        167,
+        157,
+        163,
+        160,
+        173,
+        159,
+        167,
+        173
+      ],
+      "topResources": [
+        {
+          "name": "ca-card-bridge-prod",
+          "monthlyCost": 2480,
+          "type": "Container Apps"
+        },
+        {
+          "name": "sbns-cards",
+          "monthlyCost": 1370,
+          "type": "Service Bus"
+        },
+        {
+          "name": "appi-card-bridge",
+          "monthlyCost": 800,
+          "type": "Application Insights"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "merchant-portal",
+      "monthlySpend": 1205,
+      "currency": "CAD",
+      "trend30d": [
+        40,
+        41,
+        39,
+        41,
+        42,
+        39,
+        41,
+        42,
+        41,
+        43,
+        40,
+        43,
+        41,
+        41,
+        41,
+        40,
+        41,
+        41,
+        41,
+        42,
+        43,
+        42,
+        42,
+        42,
+        43,
+        41,
+        44,
+        44,
+        45,
+        45
+      ],
+      "topResources": [
+        {
+          "name": "swa-merchant-portal",
+          "monthlyCost": 540,
+          "type": "Static Web Apps"
+        },
+        {
+          "name": "cdn-merchant-portal",
+          "monthlyCost": 420,
+          "type": "Azure CDN"
+        },
+        {
+          "name": "appi-merchant-portal",
+          "monthlyCost": 245,
+          "type": "Application Insights"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "webhook-dispatcher",
+      "monthlySpend": 2890,
+      "currency": "CAD",
+      "trend30d": [
+        94,
+        101,
+        101,
+        99,
+        96,
+        100,
+        101,
+        100,
+        103,
+        97,
+        96,
+        100,
+        100,
+        100,
+        96,
+        102,
+        101,
+        101,
+        98,
+        99,
+        99,
+        102,
+        98,
+        100,
+        107,
+        99,
+        105,
+        106,
+        106,
+        101
+      ],
+      "topResources": [
+        {
+          "name": "ca-webhook-prod",
+          "monthlyCost": 1620,
+          "type": "Container Apps"
+        },
+        {
+          "name": "sbns-webhooks",
+          "monthlyCost": 880,
+          "type": "Service Bus"
+        },
+        {
+          "name": "law-webhook-prod",
+          "monthlyCost": 390,
+          "type": "Log Analytics"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "reconciliation-batch",
+      "monthlySpend": 980,
+      "currency": "CAD",
+      "trend30d": [
+        33,
+        33,
+        32,
+        34,
+        32,
+        32,
+        32,
+        32,
+        33,
+        35,
+        34,
+        33,
+        32,
+        32,
+        32,
+        33,
+        35,
+        34,
+        36,
+        34,
+        35,
+        35,
+        35,
+        35,
+        36,
+        34,
+        34,
+        35,
+        37,
+        37
+      ],
+      "topResources": [
+        {
+          "name": "caj-reconcile-prod",
+          "monthlyCost": 540,
+          "type": "Container Apps Jobs"
+        },
+        {
+          "name": "st-reconcile-archive",
+          "monthlyCost": 260,
+          "type": "Blob Storage"
+        },
+        {
+          "name": "pg-ledger-readonly",
+          "monthlyCost": 180,
+          "type": "Postgres Flexible Server"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    },
+    {
+      "serviceId": "audit-log-collector",
+      "monthlySpend": 1615,
+      "currency": "CAD",
+      "trend30d": [
+        55,
+        56,
+        55,
+        57,
+        54,
+        57,
+        54,
+        56,
+        55,
+        52,
+        56,
+        54,
+        58,
+        57,
+        54,
+        57,
+        55,
+        59,
+        57,
+        56,
+        57,
+        58,
+        55,
+        58,
+        55,
+        55,
+        57,
+        59,
+        59,
+        55
+      ],
+      "topResources": [
+        {
+          "name": "func-audit-collector",
+          "monthlyCost": 720,
+          "type": "Functions Consumption"
+        },
+        {
+          "name": "law-audit-prod",
+          "monthlyCost": 530,
+          "type": "Log Analytics"
+        },
+        {
+          "name": "st-audit-archive",
+          "monthlyCost": 365,
+          "type": "Blob Storage"
+        }
+      ],
+      "lastUpdated": "2026-05-15T10:00:00Z"
+    }
+  ]
+}

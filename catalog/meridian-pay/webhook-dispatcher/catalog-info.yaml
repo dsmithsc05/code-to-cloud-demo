@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: webhook-dispatcher
+  description: Outbound webhook delivery to merchants. At-least-once with exponential backoff and signed payloads. Backed by Service Bus for durability.
+  annotations:
+    github.com/project-slug: meridianpay/webhook-dispatcher
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: webhook-dispatcher
+  tags:
+    - go
+    - container-apps
+  links:
+    - url: https://github.com/meridianpay/webhook-dispatcher
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/webhook-dispatcher
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-payments
+  system: meridian-pay
+  dependsOn:
+    - resource:default/service-bus-webhooks

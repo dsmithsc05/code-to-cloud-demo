@@ -1,0 +1,29 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: payments-api
+  description: Customer-facing payment authorization API. Handles ~3,200 RPS at peak. Calls ledger-svc for balance reservation and fraud-detection for inline scoring.
+  annotations:
+    github.com/project-slug: meridianpay/payments-api
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: payments-api
+  tags:
+    - dotnet
+    - container-apps
+  links:
+    - url: https://github.com/meridianpay/payments-api
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/payments-api
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-payments
+  system: meridian-pay
+  dependsOn:
+    - component:default/ledger-svc
+    - component:default/fraud-detection
+    - resource:default/azure-key-vault

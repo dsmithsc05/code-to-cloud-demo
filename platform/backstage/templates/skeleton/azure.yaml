@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+name: ${{ values.name }}
+metadata:
+  template: meridianpay-dotnet-containerapp@1.0.0
+services:
+  ${{ values.name }}:
+    project: ./apps/${{ values.name }}
+    language: dotnet
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+infra:
+  provider: bicep
+  path: infra/bicep
+  module: main

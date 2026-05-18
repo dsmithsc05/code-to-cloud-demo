@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+name: code-to-cloud-demo
+metadata:
+  template: code-to-cloud-demo@1.0.0
+services:
+  api:
+    project: ./apps/sample-dotnet-api/src
+    language: dotnet
+    host: containerapp
+    docker:
+      path: ../Dockerfile
+      context: ..
+
+hooks:
+  preprovision:
+    shell: sh
+    run: ./scripts/preprovision.sh
+    continueOnError: false
+    interactive: true
+  postprovision:
+    shell: sh
+    run: ./scripts/postprovision.sh
+    continueOnError: true
+    interactive: false
+
+infra:
+  provider: bicep
+  path: ./infra/bicep
+  module: main

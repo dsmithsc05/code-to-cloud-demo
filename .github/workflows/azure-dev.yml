@@ -1,0 +1,98 @@
+name: Azure Dev — Provision & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target azd environment
+        type: choice
+        required: true
+        default: dev
+        options:
+          - dev
+          - staging
+          - production
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: azure-dev-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  provision-deploy:
+    name: Provision & Deploy (azd)
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'dev' }}
+
+    env:
+      AZURE_ENV_NAME: ${{ inputs.environment || 'dev' }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install azd
+        uses: Azure/setup-azd@v1
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: azd login (federated)
+        run: |
+          azd auth login \
+            --client-id "$AZURE_CLIENT_ID" \
+            --federated-credential-provider "github" \
+            --tenant-id "$AZURE_TENANT_ID"
+
+      - name: dotnet restore + build + test
+        working-directory: apps/sample-dotnet-api
+        run: |
+          dotnet restore src/sample-dotnet-api.csproj
+          dotnet restore tests/sample-dotnet-api.Tests.csproj
+          dotnet build src/sample-dotnet-api.csproj --configuration Release --no-restore
+          dotnet test  tests/sample-dotnet-api.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: azd provision
+        run: azd provision --no-prompt
+
+      - name: azd deploy
+        run: azd deploy --no-prompt
+
+      - name: Publish service URL to job summary
+        run: |
+          SERVICE_API_URI="$(azd env get-value SERVICE_API_URI || true)"
+          {
+            echo "## Deployment complete"
+            echo ""
+            echo "**Environment:** \`${AZURE_ENV_NAME}\`"
+            echo "**Region:** \`${AZURE_LOCATION}\`"
+            echo ""
+            if [[ -n "$SERVICE_API_URI" ]]; then
+              echo "**API:** $SERVICE_API_URI"
+              echo ""
+              echo "\`\`\`bash"
+              echo "curl $SERVICE_API_URI/health"
+              echo "\`\`\`"
+            else
+              echo "_SERVICE_API_URI was not emitted — check azd outputs._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

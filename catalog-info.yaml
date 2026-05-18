@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://json.schemastore.org/catalog-info.json
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: code-to-cloud-demo
+  title: Code to Cloud Demo
+  description: |
+    Reference repo for the "Stop Taxing Your Developers" talk at Code to Cloud Summit
+    Calgary 2026 — .NET 8 minimal API, Bicep, and azd-driven deploy to Azure
+    Container Apps in under 90 seconds.
+  tags:
+    - dotnet
+    - bicep
+    - azd
+    - container-apps
+    - azure
+    - demo
+  annotations:
+    github.com/project-slug: dsmithsc05/code-to-cloud-demo
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/source-location: url:https://github.com/dsmithsc05/code-to-cloud-demo
+  links:
+    - url: https://github.com/dsmithsc05/code-to-cloud-demo
+      title: Source on GitHub
+      icon: github
+    - url: https://dev.azure.example.com/code-to-cloud-demo
+      title: Deployed API (dev)
+      icon: web
+spec:
+  type: service
+  owner: platform-team
+  lifecycle: experimental
+  system: developer-platform

@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ (values.repoUrl | replace('github.com?owner=', '')) | replace('&repo=', '/') }}
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: ${{ values.azureLocation }}
+    costWidget.serviceId: ${{ values.name }}
+  tags:
+    - dotnet
+    - azure
+    - container-apps
+spec:
+  type: service
+  lifecycle: ${{ values.azureEnvironment }}
+  owner: ${{ values.owner }}
+  system: meridian-pay
+  dependsOn:
+    - resource:default/azure-key-vault

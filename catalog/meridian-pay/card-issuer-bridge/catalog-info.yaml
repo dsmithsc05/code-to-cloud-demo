@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: card-issuer-bridge
+  description: Bridge to the third-party card issuer. Translates Meridian's internal card events to ISO 8583. Owns the secure outbound mTLS channel and circuit breaker.
+  annotations:
+    github.com/project-slug: meridianpay/card-issuer-bridge
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: card-issuer-bridge
+  tags:
+    - dotnet
+    - container-apps
+  links:
+    - url: https://github.com/meridianpay/card-issuer-bridge
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/card-issuer-bridge
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-payments
+  system: meridian-pay
+  dependsOn:
+    - resource:default/service-bus-cards

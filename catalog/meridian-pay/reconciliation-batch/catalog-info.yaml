@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: reconciliation-batch
+  description: Daily three-way reconciliation between ledger-svc, card-issuer-bridge, and bank settlement files. Container Apps Jobs, runs at 03:00 Canada Central time.
+  annotations:
+    github.com/project-slug: meridianpay/reconciliation-batch
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: reconciliation-batch
+  tags:
+    - python
+    - container-apps-jobs
+  links:
+    - url: https://github.com/meridianpay/reconciliation-batch
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/reconciliation-batch
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: experimental
+  owner: team-ledger
+  system: meridian-pay
+  dependsOn:
+    - component:default/ledger-svc
+    - component:default/card-issuer-bridge

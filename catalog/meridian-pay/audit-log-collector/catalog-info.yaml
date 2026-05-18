@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: audit-log-collector
+  description: Captures security-relevant events from every Meridian service via Event Grid, normalizes, and writes to immutable blob storage for compliance.
+  annotations:
+    github.com/project-slug: meridianpay/audit-log-collector
+    backstage.io/techdocs-ref: dir:.
+    azure.com/region: canadacentral
+    costWidget.serviceId: audit-log-collector
+  tags:
+    - dotnet
+    - azure-functions
+  links:
+    - url: https://github.com/meridianpay/audit-log-collector
+      title: Source code
+      icon: github
+    - url: https://meridianpay.pagerduty.com/services/audit-log-collector
+      title: PagerDuty
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-platform
+  system: meridian-pay
+  dependsOn:
+    - resource:default/event-grid-audit
+    - resource:default/blob-audit-archive

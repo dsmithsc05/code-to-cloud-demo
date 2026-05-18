@@ -1,0 +1,132 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-payments
+  description: Owns card authorization, settlement, and the payments API surface.
+spec:
+  type: team
+  profile:
+    displayName: Payments
+    email: payments@meridianpay.com
+  parent: meridian-engineering
+  children: []
+  members: [m.okafor]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-ledger
+  description: Owns the double-entry ledger, statements, and reconciliation.
+spec:
+  type: team
+  profile:
+    displayName: Ledger
+    email: ledger@meridianpay.com
+  parent: meridian-engineering
+  children: []
+  members: [s.chen]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-risk
+  description: Fraud detection, KYC, sanctions screening, and risk modelling.
+spec:
+  type: team
+  profile:
+    displayName: Risk
+    email: risk@meridianpay.com
+  parent: meridian-engineering
+  children: []
+  members: [a.patel]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-platform
+  description: Internal developer platform, observability, security baseline.
+spec:
+  type: team
+  profile:
+    displayName: Platform
+    email: platform@meridianpay.com
+  parent: meridian-engineering
+  children: []
+  members: [d.kowalski]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-merchant
+  description: Merchant portal and onboarding experience.
+spec:
+  type: team
+  profile:
+    displayName: Merchant Experience
+    email: merchant@meridianpay.com
+  parent: meridian-engineering
+  children: []
+  members: [r.alvarez]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: meridian-engineering
+  description: All of Engineering at Meridian Pay.
+spec:
+  type: business-unit
+  profile:
+    displayName: Engineering
+  children: [team-payments, team-ledger, team-risk, team-platform, team-merchant]
+  members: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: m.okafor
+spec:
+  profile:
+    displayName: Michelle Okafor
+    email: m.okafor@meridianpay.com
+  memberOf: [team-payments]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: s.chen
+spec:
+  profile:
+    displayName: Steven Chen
+    email: s.chen@meridianpay.com
+  memberOf: [team-ledger]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: a.patel
+spec:
+  profile:
+    displayName: Anika Patel
+    email: a.patel@meridianpay.com
+  memberOf: [team-risk]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: d.kowalski
+spec:
+  profile:
+    displayName: Dawid Kowalski
+    email: d.kowalski@meridianpay.com
+  memberOf: [team-platform]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: r.alvarez
+spec:
+  profile:
+    displayName: Rosa Alvarez
+    email: r.alvarez@meridianpay.com
+  memberOf: [team-merchant]
