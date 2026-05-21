@@ -75,6 +75,15 @@ app.MapGet("/api/info", () => Results.Ok(new
     dotnetVersion = Environment.Version.ToString()
 }));
 
+// Reads GREETING_TEXT — injected by Container Apps env var.
+// Returns 500 if the var is missing (env var name mismatch is the Demo 1 step-14 failure).
+app.MapGet("/greeting", () =>
+{
+    var text = Environment.GetEnvironmentVariable("GREETING_TEXT")
+               ?? throw new InvalidOperationException("GREETING_TEXT was null");
+    return Results.Ok(new { message = text });
+});
+
 app.Run();
 
 // Expose Program for WebApplicationFactory<Program> in the test project.

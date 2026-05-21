@@ -91,11 +91,35 @@ az ad sp create-for-rbac \
 
 ---
 
-### Step 6 — Hand-craft the workflow YAML                    [Target: 60s]
+### Step 6 — Write the Dockerfile and hand-craft the workflow YAML    [Target: 75s]
 
-🎙️ **Narration:** "Now the pipeline. I'll grab a starter from the GitHub Actions marketplace, paste it in, and tweak. Look — I'm going to type the resource group name in three places. Watch."
+🎙️ **Narration:** "Two things I need before I can ship: a Dockerfile and a pipeline. My Dockerfile is already sitting next to the source — that's the easy part. The pipeline is where it gets painful. I'll grab a template from the Actions marketplace, paste it in, and start tweaking. Watch how many times I have to type the resource group name."
 
-🖥️ **Action:** VS Code → create `.github/workflows/deploy.yml`. Paste this (it's deliberately wrong on line 22 — `-g rg-paindemo` should be `-g rg-pain-demo`):
+🖥️ **Action (part a):** VS Code → open `apps/sample-dotnet-api/Dockerfile`. This is the multi-stage .NET 8 Alpine image that lives next to the source code:
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+WORKDIR /source
+
+COPY src/sample-dotnet-api.csproj src/
+RUN dotnet restore src/sample-dotnet-api.csproj
+
+COPY src/ src/
+RUN dotnet publish src/sample-dotnet-api.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore \
+    /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
+WORKDIR /app
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "sample-dotnet-api.dll"]
+```
+
+🖥️ **Action (part b):** VS Code → create `.github/workflows/deploy.yml`. Paste this. The resource group name `rg-paindemo` is deliberately misspelled (missing the hyphen) and appears in **three** places:
 
 ```yaml
 name: Deploy
@@ -108,38 +132,59 @@ jobs:
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Verify resource group
+        run: az group show --name rg-paindemo
       - name: Build image
-        run: docker build -t pain-demo:${{ github.sha }} .
+        run: |
+          docker build \
+            -t pain-demo:${{ github.sha }} \
+            -f apps/sample-dotnet-api/Dockerfile \
+            apps/sample-dotnet-api/
       - name: Push to ACR
         run: |
           az acr login -n acrpaindemo
           docker tag pain-demo:${{ github.sha }} acrpaindemo.azurecr.io/pain-demo:${{ github.sha }}
           docker push acrpaindemo.azurecr.io/pain-demo:${{ github.sha }}
-      - name: Deploy
+      - name: Create Container App Environment
         run: |
-          az containerapp update \
-            -n ca-pain-demo \
-            -g rg-paindemo \
-            --image acrpaindemo.azurecr.io/pain-demo:${{ github.sha }}
+          az containerapp env create \
+            --name cae-pain-demo \
+            --resource-group rg-paindemo \
+            --location canadacentral 2>/dev/null || true
+      - name: Deploy to Container Apps
+        run: |
+          az containerapp create \
+            --name ca-pain-demo \
+            --resource-group rg-paindemo \
+            --environment cae-pain-demo \
+            --image acrpaindemo.azurecr.io/pain-demo:${{ github.sha }} \
+            --registry-server acrpaindemo.azurecr.io \
+            --min-replicas 1 \
+            --target-port 8080 \
+            --ingress external \
+            --secrets "api-greeting=keyvaultref:https://kv-pain-demo.vault.azure.net/secrets/api-greeting,identityref:system" \
+            --env-vars "api-greeting=secretref:api-greeting"
 ```
 
-> ⚠️ **Demo note:** The typo is `-g rg-paindemo` (missing the hyphen). The correct resource group name is `rg-pain-demo`. This triggers the `ResourceGroupNotFound` failure in Step 7.
+> ⚠️ **Demo note — two deliberate bugs:**
+> 1. `rg-paindemo` (missing hyphen) appears in `az group show`, `containerapp env create`, and `containerapp create`. This triggers `ResourceGroupNotFound` in Step 7.
+> 2. `--env-vars "api-greeting=secretref:api-greeting"` injects the secret under the env var name `api-greeting`, but the app reads `GREETING_TEXT`. This mismatch is what causes the 500 in Step 14.
 
 Commit, push.
 
 📋 **Screen:** GitHub repo, file committed.
 
-⏱️ **Why this hurts:** Three opportunities to fat-finger the RG name. One typo. Hours of debugging.
+⏱️ **Why this hurts:** The Dockerfile path has to match the build context. The RG name has to be consistent across three commands. One fat-finger anywhere and the whole thing dies silently two steps later.
 
 ---
 
 ### Step 7 — First run fails: resource group not found       [Target: 25s]
 
-🎙️ **Narration:** "And here we go. Pipeline runs. Container Apps update step. (pause) Resource group 'rg-paindemo' not found. Of course."
+🎙️ **Narration:** "And here we go. Pipeline runs. Verify resource group step. (pause) Resource group 'rg-paindemo' could not be found. Of course. I typed it wrong. Three times."
 
-🖥️ **Action:** GitHub Actions tab → click the running workflow → expand the failing step.
+🖥️ **Action:** GitHub Actions tab → click the running workflow → expand the **Verify resource group** step.
 
-📋 **Screen:** Red X. Error: `ResourceGroupNotFound: Resource group 'rg-paindemo' could not be found.`
+📋 **Screen:** Red X. Error: `(ResourceGroupNotFound) Resource group 'rg-paindemo' could not be found.`
 
 ⏱️ **Why this hurts:** The error is clear *now*. It's not clear at 11pm on a Tuesday.
 
@@ -147,11 +192,11 @@ Commit, push.
 
 ### Step 8 — Fix the typo, push, re-run                      [Target: 30s]
 
-🎙️ **Narration:** "Fix the hyphen. Push. Wait. (sits and waits)"
+🎙️ **Narration:** "Fix the hyphen — in all four places. Push. Wait. (sits and waits)"
 
-🖥️ **Action:** Edit YAML, change `rg-paindemo` to `rg-pain-demo` → `git commit -am "fix rg name" && git push`. Watch the workflow run.
+🖥️ **Action:** Edit YAML, change every `rg-paindemo` to `rg-pain-demo` → `git commit -am "fix rg name" && git push`. Watch the workflow run.
 
-📋 **Screen:** Workflow re-running. Build step succeeds. **Push to ACR** step now fails: `Error: az acr login failed: registry 'acrpaindemo' not found`.
+📋 **Screen:** Workflow re-running. **Verify resource group** passes. **Build image** step succeeds. **Push to ACR** step now fails: `ERROR: Get "https://acrpaindemo.azurecr.io/v2/": dial tcp: no such host — registry 'acrpaindemo' not found`.
 
 ⏱️ **Why this hurts:** I haven't even *created* the ACR yet. Why would I have? The docs I copied from assumed it existed.
 
@@ -206,43 +251,62 @@ az role assignment create \
 
 ---
 
-### Step 12 — Re-run, now it hangs on Key Vault              [Target: 50s]
+### Step 12 — Re-run, now it fails on Key Vault              [Target: 50s]
 
-🎙️ **Narration:** "Push again. Build's cached now, ACR push works, deploy step runs… and the app starts, and immediately crashes on startup. Why? It can't read its config from Key Vault. Because the Key Vault doesn't exist yet. Because nobody told me I needed one — until the app crashed."
+🎙️ **Narration:** "Push again. Build's cached, ACR push works, Container App Environment creates fine… and then the deploy step dies. Why? The `az containerapp create` command tries to wire up the Key Vault secret reference — and Key Vault `kv-pain-demo` doesn't exist yet. Nobody told me I needed one — until the pipeline told me."
 
-🖥️ **Action:** GitHub Actions logs → expand container startup logs → see `KeyVaultErrorException: The user, group or application 'sp-pain-demo' does not have secrets get permission on key vault 'kv-pain-demo'.`
+🖥️ **Action:** GitHub Actions logs → expand **Deploy to Container Apps** step → see:
 
-Switch to portal → **Key Vaults** → **+ Create** → Name `kv-pain-demo` → Region `Canada Central` → **Access policy** (NOT RBAC, because the doc that came up first said access policies) → set get/list secrets permission for `sp-pain-demo` → Create.
+```
+ERROR: (SecretInvalidValue) Secret 'api-greeting': Key Vault 'kv-pain-demo' was not found.
+       The key vault secret reference could not be resolved.
+```
 
-📋 **Screen:** KV created. Access policy granted.
+Switch to portal → **Key Vaults** → **+ Create** → Name `kv-pain-demo` → Region `Canada Central` → **Access policy** (NOT RBAC, because the doc that came up first said access policies) → set get/list secrets permission for `sp-pain-demo` → Create. Also assign the Container App's system-managed identity the `Key Vault Secrets User` role — or try to, and realize managed identity wasn't enabled, and go fix that too.
 
-⏱️ **Why this hurts:** Access policies vs RBAC is the most confusing thing in the Azure security model. I picked wrong. I won't know until audit.
+📋 **Screen:** KV created. Access policy granted. Managed identity enabled on the Container App.
+
+⏱️ **Why this hurts:** Access policies vs RBAC is the most confusing thing in the Azure security model. I picked wrong. I still won't know until audit.
 
 ---
 
-### Step 13 — Add the secret, update YAML to read it         [Target: 45s]
+### Step 13 — Add the secret, trigger re-deploy              [Target: 45s]
 
-🎙️ **Narration:** "Add the secret. Update the pipeline to inject it. Push. Wait."
+🎙️ **Narration:** "Add the secret. The pipeline already has the Key Vault reference wired — I put that in when I first wrote it. I just need the Key Vault to actually have the value. Push an empty commit to kick the workflow."
 
 🖥️ **Action:**
 ```bash
 az keyvault secret set --vault-name kv-pain-demo --name api-greeting --value "hello"
+git commit --allow-empty -m "trigger redeploy after kv setup" && git push
 ```
-Edit `deploy.yml` to add `--secrets api-greeting=keyvaultref:https://kv-pain-demo.vault.azure.net/secrets/api-greeting,identityref:system` to the `containerapp update`. Commit, push.
 
-📋 **Screen:** Workflow runs, deploy step succeeds (15s).
+📋 **Screen:** Workflow runs. All steps pass — Verify, Build, Push, Env create (already exists, `|| true` swallows it), Deploy succeeds. Container App is live. FQDN appears in the deploy output.
 
 ---
 
 ### Step 14 — Open the URL. The app is 500ing.               [Target: 60s]
 
-🎙️ **Narration:** "Click the FQDN. (waits) Five hundred. (long pause) Logs."
+🎙️ **Narration:** "Click the FQDN, hit `/greeting`. (waits) Five hundred. (long pause) Logs."
 
-🖥️ **Action:** Portal → Container App → **Logs** → query the last 5 min. Find: `System.NullReferenceException: GREETING_TEXT was null`. Pipeline injected the secret as `api-greeting`, the app reads `GREETING_TEXT`. Casing + name mismatch.
+🖥️ **Action:**
+```bash
+curl https://<fqdn-from-deploy-output>/greeting
+# → HTTP 500 Internal Server Error
+```
+
+Portal → Container App → **Logs** → KQL query the last 5 min:
+```kusto
+ContainerAppConsoleLogs_CL
+| where TimeGenerated > ago(5m)
+| where Log_s contains "GREETING_TEXT"
+| project TimeGenerated, Log_s
+```
+
+Find: `System.InvalidOperationException: GREETING_TEXT was null`. The pipeline injects the secret as env var `api-greeting` (line `--env-vars "api-greeting=secretref:api-greeting"`). The app's `/greeting` endpoint reads `GREETING_TEXT`. Different name. App throws. 500.
 
 🎙️ **Narration:** "Forty-seven minutes. The app is deployed. The app is broken. The variable name is wrong. Every team in this room has lived this week."
 
-📋 **Screen:** App still showing 500. Wall clock visible: started at 11:00, now 11:47.
+📋 **Screen:** `curl` output showing `500 Internal Server Error`. Wall clock visible: started at 11:00, now 11:47.
 
 ⏱️ **Why this hurts:** It's not one big thing. It's fourteen small things. Each one alone is fine. Together they're the tax.
 
