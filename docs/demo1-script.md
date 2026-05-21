@@ -9,7 +9,7 @@ This is the script Derek follows while recording. Every command and click path i
 
 ## Setup (do once, before you hit record)
 
-- [ ] Fresh Azure subscription named **ctc-pain-demo** with nothing in it
+- [ ] Fresh Azure subscription named **CCWD-Sub-Demo1** with nothing in it
 - [ ] Terminal at 16pt font, dark theme, single window (Windows Terminal or iTerm)
 - [ ] Edge browser, logged into `portal.azure.com` as the subscription owner
 - [ ] VS Code with an empty repo open in a workspace folder
@@ -28,7 +28,7 @@ This is the script Derek follows while recording. Every command and click path i
 
 🎙️ **Narration:** "Okay. New service. Container Apps target. I open the portal because I have to — that's where the resource group lives."
 
-🖥️ **Action:** Navigate `portal.azure.com` → **Subscriptions** → click `ctc-pain-demo`.
+🖥️ **Action:** Navigate `portal.azure.com` → **Subscriptions** → click `CCWD-Sub-Demo1`.
 
 📋 **Screen:** Subscription blade. Empty resource list.
 
@@ -169,7 +169,7 @@ Commit, push.
 
 🎙️ **Narration:** "Container Registries, Create. Name acrpaindemo — globally unique, please don't be taken. Standard tier. Canada Central. Wait sixty seconds for the resource to come up."
 
-🖥️ **Action:** Portal → **Container Registries** → **+ Create** → Subscription `ctc-pain-demo`, RG `rg-pain-demo`, Name `acrpaindemo`, Location `Canada Central`, SKU `Standard` → **Review + create** → **Create** → wait.
+🖥️ **Action:** Portal → **Container Registries** → **+ Create** → Subscription `CCWD-Sub-Demo1`, RG `rg-pain-demo`, Name `acrpaindemo`, Location `Canada Central`, SKU `Standard` → **Review + create** → **Create** → wait.
 
 📋 **Screen:** Deployment progress bar. Spins for ~50s. Eventually green.
 
