@@ -95,7 +95,7 @@ az ad sp create-for-rbac \
 
 🎙️ **Narration:** "Now the pipeline. I'll grab a starter from the GitHub Actions marketplace, paste it in, and tweak. Look — I'm going to type the resource group name in three places. Watch."
 
-🖥️ **Action:** VS Code → create `.github/workflows/deploy.yml`. Paste this (it's deliberately wrong on line 21):
+🖥️ **Action:** VS Code → create `.github/workflows/deploy.yml`. Paste this (it's deliberately wrong on line 22 — `-g rg-paindemo` should be `-g rg-pain-demo`):
 
 ```yaml
 name: Deploy
@@ -119,9 +119,11 @@ jobs:
         run: |
           az containerapp update \
             -n ca-pain-demo \
-            -g rg-paindemo \   # <-- TYPO: should be rg-pain-demo
+            -g rg-paindemo \
             --image acrpaindemo.azurecr.io/pain-demo:${{ github.sha }}
 ```
+
+> ⚠️ **Demo note:** The typo is `-g rg-paindemo` (missing the hyphen). The correct resource group name is `rg-pain-demo`. This triggers the `ResourceGroupNotFound` failure in Step 7.
 
 Commit, push.
 
