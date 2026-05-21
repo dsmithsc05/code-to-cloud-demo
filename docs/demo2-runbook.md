@@ -29,7 +29,7 @@ Confirm the right subscription is active:
 az account show --query "{name:name, id:id}" -o table
 ```
 
-Expected: subscription named for the demo (e.g. `ctc-demo-live`).
+Expected: subscription named for the demo (e.g. `CCWD-Sub-Demo1`).
 
 ### 2. Create the azd environment
 
