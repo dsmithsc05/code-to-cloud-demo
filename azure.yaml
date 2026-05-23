@@ -3,6 +3,7 @@ name: code-to-cloud-demo
 metadata:
   template: code-to-cloud-demo@1.0.0
 services:
+  # Demo 2 — .NET API on Container Apps
   api:
     project: ./apps/sample-dotnet-api/src
     language: dotnet
@@ -10,6 +11,17 @@ services:
     docker:
       path: ../Dockerfile
       context: ..
+
+  # Demo 3 — Backstage Developer Portal on Container Apps
+  # azd deploy --service backstage builds from platform/backstage/Dockerfile
+  # with the repo root as build context (needed to copy catalog/ into the image).
+  backstage:
+    project: ./platform/backstage
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      # Build context is repo root so the Dockerfile can COPY catalog/ and platform/backstage/
+      context: ../..
 
 hooks:
   preprovision:

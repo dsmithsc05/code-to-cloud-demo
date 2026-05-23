@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules"]
+}

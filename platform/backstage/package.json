@@ -1,0 +1,43 @@
+{
+  "name": "meridian-pay-backstage",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "plugins/*"
+    ]
+  },
+  "scripts": {
+    "dev": "concurrently \"yarn workspace app start\" \"yarn workspace backend start\"",
+    "start": "yarn workspace app start",
+    "start-backend": "yarn workspace backend start",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --diagnostics",
+    "clean": "backstage-cli repo clean",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "prettier:check": "prettier --check .",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.4",
+    "@backstage/e2e-test-utils": "^0.1.1",
+    "@spotify/prettier-config": "^15.0.0",
+    "concurrently": "^8.2.0",
+    "node-gyp": "^10.2.0",
+    "prettier": "^3.3.3",
+    "typescript": "~5.3.0"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "prettier": "@spotify/prettier-config",
+  "engines": {
+    "node": "18 || 20"
+  },
+  "packageManager": "yarn@1.22.22"
+}

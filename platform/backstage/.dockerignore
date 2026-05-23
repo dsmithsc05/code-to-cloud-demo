@@ -1,0 +1,12 @@
+node_modules
+packages/*/node_modules
+plugins/*/node_modules
+packages/*/dist
+packages/app/dist
+packages/backend/dist
+.git
+.github
+*.md
+coverage
+.cache
+dist-types
