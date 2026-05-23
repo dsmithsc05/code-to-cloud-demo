@@ -11,10 +11,8 @@ import {
   identityApiRef,
   oauthRequestApiRef,
 } from '@backstage/core-plugin-api';
-import {
-  microsoftAuthApiRef,
-  MicrosoftAuth,
-} from '@backstage/core-plugin-api';
+import { microsoftAuthApiRef } from '@backstage/core-plugin-api';
+import { MicrosoftAuth } from '@backstage/plugin-auth-react';
 
 export const apis: AnyApiFactory[] = [
   createApiFactory({

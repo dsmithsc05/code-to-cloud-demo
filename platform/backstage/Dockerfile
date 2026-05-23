@@ -36,6 +36,7 @@ COPY platform/backstage/tsconfig.json ./tsconfig.json
 COPY platform/backstage/packages     ./packages
 COPY platform/backstage/plugins      ./plugins
 COPY platform/backstage/app-config   ./app-config
+COPY platform/backstage/templates    ./templates
 
 # Copy catalog data so the file-based catalog works inside the container
 COPY catalog ./catalog
@@ -44,8 +45,7 @@ COPY catalog ./catalog
 RUN yarn tsc
 
 # Build the frontend (writes to packages/app/dist)
-RUN yarn workspace app build \
-    --config ../../app-config/app-config.yaml
+RUN yarn workspace app build
 
 # Build the backend bundle (writes packages/backend/dist/bundle.tar.gz)
 RUN yarn workspace backend build
@@ -82,9 +82,10 @@ RUN yarn install \
 COPY --from=build /app/packages/app/dist \
      ./packages/backend/dist/static
 
-# Copy config and catalog into the runtime image
-COPY --from=build /app/app-config ./app-config
-COPY --from=build /app/catalog    ./catalog
+# Copy config, catalog, and scaffolder templates into the runtime image
+COPY --from=build /app/app-config  ./app-config
+COPY --from=build /app/catalog     ./catalog
+COPY --from=build /app/templates   ./templates
 
 # Non-root user
 USER node

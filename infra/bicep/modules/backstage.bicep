@@ -47,6 +47,9 @@ param msTenantId string
 @secure()
 param githubToken string
 
+@description('Public HTTPS URL of the Backstage portal (e.g. https://ca-backstage-dev.region.azurecontainerapps.io). Leave empty on first provision; the deploy script will inject the real FQDN after creation.')
+param backstageBaseUrl string = ''
+
 // ─── Built-in role ids ────────────────────────────────────────────────────────
 var acrPullRoleId             = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var keyVaultSecretsUserRoleId = '4633458b-17de-408a-b874-0445c86b69e6'
@@ -109,9 +112,10 @@ resource backstageApp 'Microsoft.App/containerApps@2024-03-01' = {
     configuration: {
       activeRevisionsMode: 'Single'
       secrets: [
-        { name: 'postgres-password', value: postgresPassword }
-        { name: 'ms-client-secret',  value: msClientSecret  }
-        { name: 'github-token',       value: githubToken      }
+        { name: 'postgres-password', value: postgresPassword            }
+        { name: 'ms-client-secret',  value: msClientSecret              }
+        { name: 'github-token',      value: githubToken                 }
+        { name: 'app-insights-cs',   value: appInsightsConnectionString }
       ]
       ingress: {
         external: true
@@ -143,17 +147,19 @@ resource backstageApp 'Microsoft.App/containerApps@2024-03-01' = {
             memory: '2Gi'
           }
           env: [
-            { name: 'NODE_ENV',                               value: 'production'                    }
-            { name: 'POSTGRES_HOST',                          value: postgresHost                    }
-            { name: 'POSTGRES_PORT',                          value: '5432'                          }
-            { name: 'POSTGRES_USER',                          value: postgresUser                    }
-            { name: 'POSTGRES_PASSWORD',                      secretRef: 'postgres-password'         }
-            { name: 'POSTGRES_DB',                            value: postgresDatabase                }
-            { name: 'AZURE_CLIENT_ID',                        value: msClientId                      }
-            { name: 'AZURE_CLIENT_SECRET',                    secretRef: 'ms-client-secret'          }
-            { name: 'AZURE_TENANT_ID',                        value: msTenantId                      }
-            { name: 'GITHUB_TOKEN',                           secretRef: 'github-token'              }
-            { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING',  value: appInsightsConnectionString     }
+            { name: 'NODE_ENV',                               value: 'production'            }
+            { name: 'BACKSTAGE_BASE_URL',                     value: backstageBaseUrl        }
+            { name: 'BACKSTAGE_BACKEND_BASE_URL',             value: backstageBaseUrl        }
+            { name: 'POSTGRES_HOST',                          value: postgresHost            }
+            { name: 'POSTGRES_PORT',                          value: '5432'                  }
+            { name: 'POSTGRES_USER',                          value: postgresUser            }
+            { name: 'POSTGRES_PASSWORD',                      secretRef: 'postgres-password' }
+            { name: 'POSTGRES_DB',                            value: postgresDatabase        }
+            { name: 'AZURE_CLIENT_ID',                        value: msClientId              }
+            { name: 'AZURE_CLIENT_SECRET',                    secretRef: 'ms-client-secret'  }
+            { name: 'AZURE_TENANT_ID',                        value: msTenantId              }
+            { name: 'GITHUB_TOKEN',                           secretRef: 'github-token'      }
+            { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING',  secretRef: 'app-insights-cs'   }
           ]
           probes: [
             {

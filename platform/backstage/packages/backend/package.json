@@ -30,7 +30,7 @@
     "@backstage/plugin-search-backend-module-catalog": "^0.1.24",
     "@backstage/plugin-search-backend-module-techdocs": "^0.1.21",
     "@backstage/plugin-techdocs-backend": "^1.10.3",
-    "@backstage/plugin-kubernetes-backend": "^0.17.0",
+    "@backstage/plugin-kubernetes-backend": "^0.18.0",
     "app": "^0.0.1"
   },
   "devDependencies": {

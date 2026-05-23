@@ -56,29 +56,29 @@ catalog:
         - Template
   locations:
     - type: file
-      target: ../../../catalog/meridian-pay/orgs.yaml
+      target: ../catalog/meridian-pay/orgs.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/system.yaml
+      target: ../catalog/meridian-pay/system.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/payments-api/catalog-info.yaml
+      target: ../catalog/meridian-pay/payments-api/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/ledger-svc/catalog-info.yaml
+      target: ../catalog/meridian-pay/ledger-svc/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/fraud-detection/catalog-info.yaml
+      target: ../catalog/meridian-pay/fraud-detection/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/statements-worker/catalog-info.yaml
+      target: ../catalog/meridian-pay/statements-worker/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/kyc-onboarding/catalog-info.yaml
+      target: ../catalog/meridian-pay/kyc-onboarding/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/card-issuer-bridge/catalog-info.yaml
+      target: ../catalog/meridian-pay/card-issuer-bridge/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/merchant-portal/catalog-info.yaml
+      target: ../catalog/meridian-pay/merchant-portal/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/webhook-dispatcher/catalog-info.yaml
+      target: ../catalog/meridian-pay/webhook-dispatcher/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/reconciliation-batch/catalog-info.yaml
+      target: ../catalog/meridian-pay/reconciliation-batch/catalog-info.yaml
     - type: file
-      target: ../../../catalog/meridian-pay/audit-log-collector/catalog-info.yaml
+      target: ../catalog/meridian-pay/audit-log-collector/catalog-info.yaml
     - type: file
       target: ../templates/new-dotnet-service.yaml
       rules:

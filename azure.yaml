@@ -21,7 +21,7 @@ services:
     docker:
       path: ./Dockerfile
       # Build context is repo root so the Dockerfile can COPY catalog/ and platform/backstage/
-      context: ../..
+      context: .
 
 hooks:
   preprovision:

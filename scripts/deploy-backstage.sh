@@ -16,7 +16,11 @@ if [[ -f "${REPO_ROOT}/.env" ]]; then
   set -a; source "${REPO_ROOT}/.env"; set +a
 fi
 if command -v azd &>/dev/null; then
-  eval "$(azd env get-values 2>/dev/null)" || true
+  _azd() { azd env get-value "$1" 2>/dev/null || true; }
+  [[ -z "${AZURE_ENV_NAME:-}" ]]              && AZURE_ENV_NAME="$(_azd AZURE_ENV_NAME)"
+  [[ -z "${AZURE_RESOURCE_GROUP:-}" ]]        && AZURE_RESOURCE_GROUP="$(_azd AZURE_RESOURCE_GROUP)"
+  [[ -z "${AZURE_CONTAINER_REGISTRY_ENDPOINT:-}" ]] && AZURE_CONTAINER_REGISTRY_ENDPOINT="$(_azd AZURE_CONTAINER_REGISTRY_ENDPOINT)"
+  export AZURE_ENV_NAME AZURE_RESOURCE_GROUP AZURE_CONTAINER_REGISTRY_ENDPOINT
 fi
 
 [[ -z "${AZURE_ENV_NAME:-}" ]]         && die "AZURE_ENV_NAME is not set."
@@ -75,6 +79,19 @@ FQDN="$(az containerapp show \
   --query 'properties.configuration.ingress.fqdn' -o tsv 2>/dev/null || echo '')"
 
 if [[ -n "${FQDN}" ]]; then
+  BACKSTAGE_URL="https://${FQDN}"
   echo ""
-  ok "Backstage is deploying at: https://${FQDN}"
+  ok "Backstage is deploying at: ${BACKSTAGE_URL}"
+
+  # Inject the real base URL now that the FQDN is known.
+  # app-config.yaml substitutes BACKSTAGE_BASE_URL and BACKSTAGE_BACKEND_BASE_URL at startup.
+  step "Updating BACKSTAGE_BASE_URL env vars with resolved FQDN"
+  az containerapp update \
+    --name "${CONTAINER_APP_NAME}" \
+    --resource-group "${AZURE_RESOURCE_GROUP}" \
+    --set-env-vars \
+      "BACKSTAGE_BASE_URL=${BACKSTAGE_URL}" \
+      "BACKSTAGE_BACKEND_BASE_URL=${BACKSTAGE_URL}" \
+    --output none
+  ok "Base URL env vars updated → ${BACKSTAGE_URL}"
 fi

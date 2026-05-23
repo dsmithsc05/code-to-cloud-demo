@@ -17,9 +17,13 @@ if [[ -f "${REPO_ROOT}/.env" ]]; then
   set -a; source "${REPO_ROOT}/.env"; set +a
 fi
 
-# Also pull azd outputs if azd is available
+# Pull specific azd outputs if azd is available (no eval — avoids arbitrary code execution)
 if command -v azd &>/dev/null; then
-  eval "$(azd env get-values 2>/dev/null)" || true
+  _azd() { azd env get-value "$1" 2>/dev/null || true; }
+  [[ -z "${AZURE_CONTAINER_REGISTRY_ENDPOINT:-}" ]] && AZURE_CONTAINER_REGISTRY_ENDPOINT="$(_azd AZURE_CONTAINER_REGISTRY_ENDPOINT)"
+  [[ -z "${AZURE_CONTAINER_REGISTRY_NAME:-}" ]]     && AZURE_CONTAINER_REGISTRY_NAME="$(_azd AZURE_CONTAINER_REGISTRY_NAME)"
+  [[ -z "${AZURE_ENV_NAME:-}" ]]                    && AZURE_ENV_NAME="$(_azd AZURE_ENV_NAME)"
+  export AZURE_CONTAINER_REGISTRY_ENDPOINT AZURE_CONTAINER_REGISTRY_NAME AZURE_ENV_NAME
 fi
 
 [[ -z "${AZURE_CONTAINER_REGISTRY_ENDPOINT:-}" ]] && \

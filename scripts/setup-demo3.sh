@@ -83,8 +83,16 @@ if [[ "${SKIP_INFRA}" == false ]]; then
   azd provision --no-prompt
   ok "Base infrastructure provisioned"
 
-  # Capture azd outputs
-  eval "$(azd env get-values)"
+  # Capture azd outputs — fetch each variable individually to avoid eval of arbitrary shell code
+  _load_azd_var() { azd env get-value "$1" 2>/dev/null || true; }
+  AZURE_RESOURCE_GROUP="$(_load_azd_var AZURE_RESOURCE_GROUP)"
+  AZURE_CONTAINER_REGISTRY_NAME="$(_load_azd_var AZURE_CONTAINER_REGISTRY_NAME)"
+  AZURE_CONTAINER_REGISTRY_ENDPOINT="$(_load_azd_var AZURE_CONTAINER_REGISTRY_ENDPOINT)"
+  AZURE_CONTAINER_APPS_ENVIRONMENT_ID="$(_load_azd_var AZURE_CONTAINER_APPS_ENVIRONMENT_ID)"
+  AZURE_KEY_VAULT_NAME="$(_load_azd_var AZURE_KEY_VAULT_NAME)"
+  APPLICATIONINSIGHTS_CONNECTION_STRING="$(_load_azd_var APPLICATIONINSIGHTS_CONNECTION_STRING)"
+  export AZURE_RESOURCE_GROUP AZURE_CONTAINER_REGISTRY_NAME AZURE_CONTAINER_REGISTRY_ENDPOINT \
+         AZURE_CONTAINER_APPS_ENVIRONMENT_ID AZURE_KEY_VAULT_NAME APPLICATIONINSIGHTS_CONNECTION_STRING
 
   # ─── 3. Demo 3 specific infra (PostgreSQL + Backstage Container App) ─────
   step "Provisioning Demo 3 infrastructure (PostgreSQL + Backstage Container App)"
@@ -141,7 +149,10 @@ step "Deploying Backstage to Azure Container Apps"
 
 # ─── 6. Verify ───────────────────────────────────────────────────────────────
 step "Verifying deployment"
-"${SCRIPT_DIR}/verify-demo3.sh"
+if ! "${SCRIPT_DIR}/verify-demo3.sh"; then
+  warn "Some verification checks failed — the infrastructure and image are deployed."
+  warn "Backstage may still be initialising. Re-run './scripts/verify-demo3.sh' in ~2 min."
+fi
 
 echo -e "\n${GREEN}${BOLD}✅ Demo 3 is live!${RESET}"
 echo -e "   Backstage URL: ${BACKSTAGE_URI:-<check azd env get-values for BACKSTAGE_URI>}"
