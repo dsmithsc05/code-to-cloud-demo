@@ -69,6 +69,7 @@ jobs:
           dotnet restore src/sample-dotnet-api.csproj
           dotnet restore tests/sample-dotnet-api.Tests.csproj
           dotnet build src/sample-dotnet-api.csproj --configuration Release --no-restore
+          dotnet build tests/sample-dotnet-api.Tests.csproj --configuration Release --no-restore
           dotnet test  tests/sample-dotnet-api.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
 
       - name: azd provision
