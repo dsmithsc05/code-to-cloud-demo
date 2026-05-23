@@ -1,0 +1,41 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "private": true,
+  "backstage": {
+    "role": "backend"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "migrate:create": "knex migrate:make --knexfile knexfile.js"
+  },
+  "dependencies": {
+    "@backstage/backend-defaults": "^0.3.3",
+    "@backstage/backend-plugin-api": "^0.6.21",
+    "@backstage/catalog-model": "^1.5.0",
+    "@backstage/config": "^1.2.0",
+    "@backstage/plugin-app-backend": "^0.3.65",
+    "@backstage/plugin-auth-backend": "^0.22.5",
+    "@backstage/plugin-auth-backend-module-microsoft-provider": "^0.1.6",
+    "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.4",
+    "@backstage/plugin-catalog-backend": "^1.23.0",
+    "@backstage/plugin-catalog-backend-module-github": "^0.5.0",
+    "@backstage/plugin-scaffolder-backend": "^1.22.0",
+    "@backstage/plugin-scaffolder-backend-module-github": "^0.2.11",
+    "@backstage/plugin-search-backend": "^1.5.11",
+    "@backstage/plugin-search-backend-module-catalog": "^0.1.24",
+    "@backstage/plugin-search-backend-module-techdocs": "^0.1.21",
+    "@backstage/plugin-techdocs-backend": "^1.10.3",
+    "@backstage/plugin-kubernetes-backend": "^0.17.0",
+    "app": "^0.0.1"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.26.4",
+    "@types/node": "^20.0.0",
+    "typescript": "~5.3.0"
+  }
+}

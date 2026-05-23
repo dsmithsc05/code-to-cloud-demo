@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION}"
+    },
+    "containerRegistryName": {
+      "value": "${AZURE_CONTAINER_REGISTRY_NAME}"
+    },
+    "keyVaultName": {
+      "value": "${AZURE_KEY_VAULT_NAME}"
+    },
+    "containerAppsEnvironmentId": {
+      "value": "${AZURE_CONTAINER_APPS_ENVIRONMENT_ID}"
+    },
+    "appInsightsConnectionString": {
+      "value": "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
+    },
+    "msClientId": {
+      "value": "${AUTH_MICROSOFT_CLIENT_ID}"
+    },
+    "msTenantId": {
+      "value": "${AUTH_MICROSOFT_TENANT_ID}"
+    },
+    "postgresPassword": {
+      "value": "${BACKSTAGE_POSTGRES_PASSWORD}"
+    },
+    "msClientSecret": {
+      "value": "${AUTH_MICROSOFT_CLIENT_SECRET}"
+    },
+    "githubToken": {
+      "value": "${GITHUB_TOKEN}"
+    }
+  }
+}
